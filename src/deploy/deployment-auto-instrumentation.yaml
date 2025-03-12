@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: otel-spring-boot-demo
+  name: otel-spring-boot-demo
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: otel-spring-boot-demo
+  template:
+    metadata:
+      labels:
+        app: otel-spring-boot-demo
+    spec:
+      initContainers:
+        - image: harbor.warnerchen.com/library/busybox:latest
+          imagePullPolicy: IfNotPresent
+          name: init-otel-java-agent
+          command:
+            - sh
+            - -c
+            - wget https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar -O /otel/opentelemetry-javaagent.jar
+          volumeMounts:
+            - mountPath: /otel
+              name: otel
+      containers:
+        - image: harbor.warnerchen.com/library/otel-spring-boot-demo:v0.0.1
+          imagePullPolicy: IfNotPresent
+          name: otel-spring-boot-demo
+          env:
+          - name: JAVA_AGENT_OPTS
+            value: "-javaagent:/otel/opentelemetry-javaagent.jar"
+          - name: JAVA_OPTS
+            value: "-Xmx512m -Xms256m"
+          - name: OTEL_EXPORTER_OTLP_ENDPOINT 
+            value: http://opentelemetry-collector.open-telemetry.svc.cluster.local:4317
+          - name: OTEL_SERVICE_NAME
+            value: otel-spring-boot-demo
+          - name: OTEL_EXPORTER_OTLP_PROTOCOL
+            value: grpc
+          resources:
+            limits:
+              cpu: "1"
+              memory: "1Gi"
+            requests:
+              cpu: "250m"
+              memory: "256Mi"
+          volumeMounts:
+            - mountPath: /otel
+              name: otel
+      volumes:
+        - name: otel
+          emptyDir: {}
