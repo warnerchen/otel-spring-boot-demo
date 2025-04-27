@@ -1,8 +1,16 @@
+FROM harbor.warnerchen.com/library/maven:3.8.5-openjdk-17-slim AS builder
+
+WORKDIR /build
+
+COPY . .
+
+RUN mvn clean package -DskipTests
+
 FROM harbor.warnerchen.com/library/openjdk:17-slim
 
 WORKDIR /app
 
-COPY target/*.jar app.jar
+COPY --from=builder /build/target/*.jar app.jar
 
 ENV TINI_VERSION v0.19.0
 
