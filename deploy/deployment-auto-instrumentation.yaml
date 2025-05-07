@@ -15,7 +15,7 @@ spec:
       labels:
         app: otel-spring-boot-demo
       annotations:
-        instrumentation.opentelemetry.io/inject-java: "opentelemetry-operator-system/opentelemetry-autoinstrumentation"
+        instrumentation.opentelemetry.io/inject-java: "open-telemetry/otel-instrumentation"
     spec:
       containers:
         - image: harbor.warnerchen.com/library/otel-spring-boot-demo:v0.0.1
