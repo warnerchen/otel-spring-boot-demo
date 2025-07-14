@@ -35,6 +35,8 @@ spec:
             value: "-javaagent:/otel/opentelemetry-javaagent.jar"
           - name: JAVA_OPTS
             value: "-Xmx512m -Xms256m"
+          - name: LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB
+            value: DEBUG
           - name: OTEL_EXPORTER_OTLP_ENDPOINT 
             value: http://opentelemetry-collector.open-telemetry.svc.cluster.local:4317
             # value: http://opentelemetry-collector.open-telemetry.svc.cluster.local:4318

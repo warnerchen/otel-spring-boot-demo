@@ -24,6 +24,8 @@ spec:
           env:
           - name: JAVA_OPTS
             value: "-Xmx512m -Xms256m"
+          - name: LOGGING_LEVEL_ORG_SPRINGFRAMEWORK_WEB
+            value: DEBUG
           resources:
             limits:
               cpu: "1"
